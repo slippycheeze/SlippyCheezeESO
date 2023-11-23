@@ -3,8 +3,8 @@
 ## APIVersion: 101040
 ## AddOnVersion: 1
 ## Version: 1
-## DependsOn: 
-## OptionalDependsOn: 
+## DependsOn: LibDebugLogger>=180
+## OptionalDependsOn: AutoResearch PersonalAssistantWorker
 ## IsLibrary: false
 
 # Most people also include the ZOS mandated licensing boilerplate in the manifest though you are welcome to include it in any way
@@ -16,4 +16,5 @@
 # and/or other countries. All rights reserved.
 
 
-SlippyCheezeESO.lua
+PersonalAssistantAndAutoResearch.lua
+
