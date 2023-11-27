@@ -23,7 +23,7 @@ local function BeforeStartCraftingInterraction(orig, ...)
   end
 
   if not active then
-    return orig()
+    return orig(...)
   end
 
   if state == IDLE then
@@ -49,7 +49,7 @@ local function BeforeStartCraftingInterraction(orig, ...)
   if state == BUSY then
     logger:Debug("calling PersonalAssistant from state", state)
     state = WEIRD               -- catch if I am invoked more times than expected.
-    return orig()
+    return orig(...)
   else
     logger:Debug("deferring call with state", state, "and active", active)
     local deferred = {...}
