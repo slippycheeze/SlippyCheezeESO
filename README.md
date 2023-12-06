@@ -43,3 +43,21 @@ to add the same sort of priority ordering that AR offers, and I /do/ want to
 research traits in priority order while I build back up my crafter on
 a new server.
 
+
+## Hider, No Hiding
+
+LibDebugLogger comes with a feature to hide the output of a ZOS provided "debug"
+function; sadly, it used to be the more or less standard way to emit messages
+for the user from addons.
+
+So having it hidden is **technically** correct, but not actually very helpful:
+a bunch of addons I use depend on it outputting the message to show,
+eg, progress.
+
+This simply disabled the feature at load time, then vanishes.
+
+
+## SlippyCheezeUI
+
+Small UI tweaks for myself.  You almost certainly don't want to use this, unless
+you are me.  See the code itself for what it does, if you are, or you do.
