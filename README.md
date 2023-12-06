@@ -10,11 +10,14 @@ a message here.
 
 ## Draw Weapons Automatically
 
-When your reticle passes over a hostile enemy, draw your weapons if they
-were sheathed, and nothing gets in the way.
+When your reticle passes over a hostile enemy, draw your weapons if they were
+sheathed, and nothing gets in the way.  This uses the ZOS definition of "enemy
+under the reticle" which can be weirdly broad, but generally works out
+well enough.
 
-This uses the ZOS definition of "enemy under the reticle" which can be weirdly
-broad, but generally works out well enough.
+At the very least, it mostly stopped me being frustrated because my first "light
+attack" did nothing but trigger weapons out, when I *expected* it to hit
+something with a pointy thing or zappy thing.
 
 
 ## Khajiit Lockpick Notifier
