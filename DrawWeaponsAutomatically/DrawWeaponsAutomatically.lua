@@ -1,6 +1,6 @@
 -- this looks like it can get away with being the second most minimalist addon ever
 local logger = LibDebugLogger("SC-DWA")
-logger:SetMinLevelOverride(LibDebugLogger.LOG_LEVEL_DEBUG)
+-- logger:SetMinLevelOverride(LibDebugLogger.LOG_LEVEL_DEBUG)
 
 EVENT_MANAGER:RegisterForEvent(
   "DrawWeaponsAutomatically",
