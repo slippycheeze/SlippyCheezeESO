@@ -20,6 +20,20 @@ attack" did nothing but trigger weapons out, when I *expected* it to hit
 something with a pointy thing or zappy thing.
 
 
+## Bar Swap Fail Warning (**INCOMPLETE**)
+
+When finished, this will detect if the bar swap key has been pressed, but is not
+followed by an actual bar swap event.  If that happens, it'll **REVISIT**
+somehow warn about the fact.
+
+Of course, once code complete, it'll need some significant testing, because I'll
+bet there are a dozen edge cases that I need to account for around all this.
+
+Easy repros are: hit "weapon swap" twice in quick succession, or start a channel
+like Arcanist Cephelarch Flail and weapon swap after it begins (~ 1 server RTT,
+I think) but before the 0.3 second channel happens.
+
+
 ## Khajiit Lockpick Notifier
 
 A little hack on the excellent [Lockpick Notifier][LockpickNotifier] addon,

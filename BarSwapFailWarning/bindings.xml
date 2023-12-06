@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Bindings>
+  <!-- this should sit above SI_KEYBINDINGS_LAYER_GENERAL and observes the keypresses on it -->
+  <Layer name="SC_BSFW_OBSERVER">
+    <Category name="SI_KEYBINDINGS_CATEGORY_COMBAT">
+
+      <Action name="SC_BSFW_SWAP" hideAction="true" rebindable="false" inheritsBindFrom="SPECIAL_MOVE_WEAPON_SWAP">
+        <Down>
+          return SC_BSFW_OnWeaponSwap(keybind)
+        </Down>
+      </Action>
+
+<!--
+      <Action name="SC_BSFW_SET_1" hideAction="true" rebindable="false" inheritsBindFrom="SPECIAL_MOVE_WEAPON_SWAP_TO_SET_1">
+        <Down>
+          d("SC_BSFW_TO_SET_1")
+          SlippyCheeze.BSFW:OnWeaponSwap(keybind)
+          return false
+        </Down>
+      </Action>
+
+      <Action name="SC_BSFW_SET_2" hideAction="true" rebindable="false" inheritsBindFrom="SPECIAL_MOVE_WEAPON_SWAP_TO_SET_2">
+        <Down>
+          d("SC_BSFW_TO_SET_2")
+          SlippyCheeze.BSFW:OnWeaponSwap(keybind)
+          return false
+        </Down>
+      </Action>
+-->      
+    </Category>
+  </Layer>
+</Bindings>
