@@ -1,9 +1,9 @@
-## Title: SC: UI Tweaks
+## Title: SC: AutoCategory Extras
 ## Author: @SlippyCheeze
 ## APIVersion: 101040
 ## AddOnVersion: 1
 ## Version: 1
-## DependsOn: LibDebugLogger>=180
+## DependsOn: LibDebugLogger>=180 AutoCategory
 ## IsLibrary: false
 
 # Most people also include the ZOS mandated licensing boilerplate in the manifest though you are welcome to include it in any way
@@ -14,5 +14,5 @@
 # The Elder Scrolls® and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the United States
 # and/or other countries. All rights reserved.
 
-SlippyCheezeUI.lua
+AutoCategoryExtras.lua
 

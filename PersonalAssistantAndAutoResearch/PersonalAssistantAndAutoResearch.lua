@@ -1,4 +1,4 @@
-local logger = LibDebugLogger("SC-PAAW")
+local logger = LibDebugLogger("SC-PAAR")
 logger:SetMinLevelOverride(LibDebugLogger.LOG_LEVEL_DEBUG)
 
 
@@ -13,51 +13,10 @@ local WEIRD = 4
 local active = false
 local state = IDLE
 
-local function BeforeStartCraftingInterraction(orig, ...)
-  if select('#', ...) == 0 then
-    logger:Debug("we closed the crafting interface")
-    active = false
-    state  = IDLE
-  else
-    active = true
-  end
-
-  if not active then
-    return orig(...)
-  end
-
-  if state == IDLE then
-    -- first call, we need to reschedule to make sure the AutoResearch event
-    -- handler is called first; without that it will by default be called after
-    -- our handler, and we can't tell if it is going to interrupt our work.
-    logger:Debug("IDLE → WAIT_FOR_AUTORESEARCH")
-    state = WAIT_FOR_AUTORESEARCH
-    
-    local deferred = {...}
-    return zo_callLater(function() BeforeStartCraftingInterraction(orig, unpack(deferred)) end, 0)
-  end
-
-  if state == WAIT_FOR_AUTORESEARCH then
-    local rs = AutoResearch.researchState
-    if rs == 'stopping' or rs == 'stopped' then
-      -- AutoResearch is done, 
-      logger:Debug("WAIT_FOR_AUTORESEARCH → BUSY, AutoResearch.researchState is", AutoResearch.researchState)
-      state = BUSY
-    end
-  end
-
-  if state == BUSY then
-    logger:Debug("calling PersonalAssistant from state", state)
-    state = WEIRD               -- catch if I am invoked more times than expected.
-    return orig(...)
-  else
-    logger:Debug("deferring call with state", state, "and active", active)
-    local deferred = {...}
-    return zo_callLater(function() BeforeStartCraftingInterraction(orig, unpack(deferred)) end, 100)
-  end
-end
-
-
+-- performance hacks
+local EVENT_MANAGER = EVENT_MANAGER
+local unpack = unpack
+local select = select
 
 if AutoResearch == nil then
   logger:Info("AutoResearch is not present")
@@ -68,9 +27,70 @@ elseif PersonalAssistant.Worker == nil then
 else
   -- no need to wait, everything we want for hooking is already present when
   -- this file is evaluated, so we are good to go!
-  logger:Info("hooking PA Worker StartCraftingInterraction")
-  local orig = PersonalAssistant.Worker.StartCraftingInterraction
-  PersonalAssistant.Worker.StartCraftingInterraction = function(...)
-    return BeforeStartCraftingInterraction(orig, ...)
+  logger:Info("will hook PA Worker StartCraftingInterraction")
+  local PAWorker_StartCraftingInterraction = PersonalAssistant.Worker.StartCraftingInterraction
+
+  -- forward-declare the hook function, since the defer/hook pair want to
+  -- reference each other.  replaced shortly.
+  local BeforeStartCraftingInterraction = function()
+    logger:Error("BeforeStartCraftingInterraction dummy function called!")
   end
+  
+  -- don't have to care if this is called twice, as it'll just reset the delay
+  -- and call it a bit later.  which is just fine™.
+  local function DeferFor(delay, ...)
+    local deferredArguments = {...}  -- needed to be able to reference the varargs in the closure.
+
+    EVENT_MANAGER:RegisterForUpdate("SC-PAAR", delay, function()
+        EVENT_MANAGER:UnregisterForUpdate("SC-PAAR")
+        BeforeStartCraftingInterraction(unpack(deferredArguments))
+    end)
+  end
+
+ BeforeStartCraftingInterraction = function(...)
+    if select('#', ...) == 0 then
+      logger:Debug("we closed the crafting interface")
+      active = false
+      state  = IDLE
+    else
+      active = true
+    end
+
+    if not active then
+      return PAWorker_StartCraftingInterraction(...)
+    end
+
+    if state == IDLE then
+      -- first call, we need to reschedule to make sure the AutoResearch event
+      -- handler is called first; without that it will by default be called after
+      -- our handler, and we can't tell if it is going to interrupt our work.
+      logger:Debug("IDLE → WAIT_FOR_AUTORESEARCH")
+      state = WAIT_FOR_AUTORESEARCH
+      -- delay zero means "next frame", which is definitely after *all* our
+      -- callbacks have been run.
+      return DeferFor(0, ...)   
+    end
+
+    if state == WAIT_FOR_AUTORESEARCH then
+      local rs = AutoResearch.researchState
+      if rs == 'stopping' or rs == 'stopped' then
+        -- AutoResearch is done, 
+        logger:Debug("WAIT_FOR_AUTORESEARCH → BUSY, AutoResearch.researchState is", rs)
+        state = BUSY
+      end
+    end
+
+    if state == BUSY then
+      logger:Debug("calling PersonalAssistant from state", state)
+      state = WEIRD               -- catch if I am invoked more times than expected.
+      return PAWorker_StartCraftingInterraction(...)
+    else
+      logger:Debug("deferring call with state =", state, "active =", active, "AR.rs =", AutoResearch.researchState)
+      return DeferFor(100, ...)
+    end
+  end
+
+  -- attach the actual hook function now.
+  PersonalAssistant.Worker.StartCraftingInterraction = BeforeStartCraftingInterraction
+  logger:Info("PA Worker StartCraftingInterraction hook was installed")
 end
