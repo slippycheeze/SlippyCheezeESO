@@ -107,7 +107,7 @@ end
 
 
 local function HandleSwitchBar()
-  if not (SwitchBar or SwitchBar.SavedVars or SwitchBarMain) then
+  if not (SwitchBar and SwitchBar.SavedVars and SwitchBarMain) then
     return
   end
 

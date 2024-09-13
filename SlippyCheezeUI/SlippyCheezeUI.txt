@@ -1,6 +1,6 @@
 ## Title: SC: UI Tweaks
 ## Author: @SlippyCheeze
-## APIVersion: 101040
+## APIVersion: 101043
 ## AddOnVersion: 1
 ## Version: 1
 ## DependsOn: LibDebugLogger>=180
